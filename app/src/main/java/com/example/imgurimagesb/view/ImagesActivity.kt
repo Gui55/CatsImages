@@ -1,11 +1,14 @@
 package com.example.imgurimagesb.view
 
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.imgurimagesb.databinding.ActivityMainBinding
+import com.example.imgurimagesb.usecase.base.ResultStatus
 import com.example.imgurimagesb.util.imageloader.ImageLoader
 import com.example.imgurimagesb.viewmodel.ImagesViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,7 +50,36 @@ class ImagesActivity : AppCompatActivity() {
 
     private fun setupObservations() {
         viewModel.images.observe(this){
-            adapter.submitList(it)
+            when(it){
+                ResultStatus.Loading -> {
+                    turnOnList(false)
+                }
+                is ResultStatus.Success -> {
+                    adapter.submitList(it.data)
+                    turnOnList(true)
+                }
+                is ResultStatus.Error -> Toast.makeText(this, it.throwable.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun turnOnList(showList: Boolean){
+        if(showList){
+            if(binding.tvLoading.visibility != View.GONE){
+                binding.tvLoading.visibility = View.GONE
+            }
+
+            if(binding.recyclerImages.visibility != View.VISIBLE){
+                binding.recyclerImages.visibility = View.VISIBLE
+            }
+        } else {
+            if(binding.tvLoading.visibility != View.VISIBLE){
+                binding.tvLoading.visibility = View.VISIBLE
+            }
+
+            if(binding.recyclerImages.visibility != View.GONE){
+                binding.recyclerImages.visibility = View.GONE
+            }
         }
     }
 }
