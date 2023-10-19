@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ImgurImagesB</string>
+    <string name="image_list_title">Lista de imagens</string>
+    <string name="list_element_string">Elemento de lista de imagens</string>
+</resources>
